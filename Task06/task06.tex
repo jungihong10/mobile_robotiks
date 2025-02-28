@@ -1,0 +1,239 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{6}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+
+\renewcommand{\figurename}{Figure}
+
+
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Iterative Closest Point algorithm (ICP)}
+
+
+\subsection{a)}
+
+We implemented the method ScanMatcher::findMatchesClosest, which identifies the closest point in the reference scan for each point in the new scan. The closest point is determined using the Euclidean distance.
+
+\begin{itemize}
+    \item \textbf{Input Transformation:} Each new point is transformed using the provided rotation and translation (represented by the \texttt{Transform} structure).
+    \item \textbf{Closest Point Search:}
+    \begin{itemize}
+        \item For each transformed point, we iterate through all reference points.
+        \item The Euclidean distance between the transformed point and each reference point is computed.
+        \item The reference point with the smallest distance is identified as the closest point.
+    \end{itemize}
+    \item \textbf{Distance Threshold:} If the distance between a new point and its closest reference point exceeds the specified \texttt{distanceThreshold}, the match is discarded.
+    \item \textbf{Output:} Valid matches are stored as pairs of new points and their corresponding closest reference points.
+\end{itemize}
+
+
+\subsection{b)}
+Rays which do not hit any obstacle return inf, NaN  or values outside of the range of the laser, which are filtered out in the transformLaserScan function.
+
+
+\subsection{c)}
+
+In this task, we implemented a dynamic distance threshold for point matching. The distance threshold is defined as:
+
+\[
+\texttt{distanceThreshold} = \max\left(0.5 \cdot e^{-0.1 \cdot i}, 0.05\right)
+\]
+
+where \(i\) represents the current iteration of the algorithm.
+
+\textbf{Explanation:}
+\begin{itemize}
+    \item The exponential decay function (\(0.5 \cdot e^{-0.1 \cdot i}\)) ensures that the threshold decreases as the algorithm progresses. This allows for tighter matches in later iterations, improving precision. large jumps are prevented.
+    \item The minimum threshold (\(0.05\)) prevents the value from becoming too small, ensuring robustness against noise and numerical instabilities.
+\end{itemize}
+
+This approach balances the need for a more relaxed threshold in initial iterations (to handle larger deviations) with higher precision in later iterations.
+
+
+
+\subsection{d)}
+
+We implemented the method \texttt{ScanMatcher::findTransformationLSQ}, which computes the transformation minimizing the sum of squared distances between matched points. The steps are as follows:
+
+\begin{itemize}
+    \item \textbf{Centroid Calculation:} Compute the centroids of reference (\texttt{pRef}) and new (\texttt{pNew}) points.
+    \item \textbf{Point Centering:} Center the points by subtracting their respective centroids.
+    \item \textbf{Covariance Matrix:} Compute components \(S_{xx}, S_{xy}, S_{yx}, S_{yy}\) of the cross-covariance matrix.
+    \item \textbf{Rotation Angle:} Calculate the rotation angle:
+    \[
+    \texttt{rotationAngle} = \arctan\left(\frac{S_{xy} - S_{yx}}{S_{xx} + S_{yy}}\right)
+    \]
+    \item \textbf{Translation:} Compute the translation:
+    \[
+    \texttt{translation} = \texttt{centroidRef} - \texttt{centroidNew}.rotated(\texttt{rotationAngle})
+    \]
+\end{itemize}
+
+The method returns the computed transformation as a combination of translation and rotation.
+
+\subsection{e)}
+
+
+The Iterative Closest Point (ICP) algorithm is a method for aligning two point clouds by iteratively minimizing the distances between corresponding points. The iterative part involves repeatedly refining the transformation until convergence. The key steps are:
+
+\begin{enumerate}
+    \item \textbf{Initial Transformation:} Start with an initial guess for the transformation.
+    \item \textbf{Find Closest Points:} For each point in the new scan, find the closest point in the reference scan.
+    \item \textbf{Compute Transformation:} Calculate the optimal transformation (translation and rotation) that minimizes the distance between matched points.
+    \item \textbf{Apply Transformation:} Transform the new scan using the computed transformation.
+    \item \textbf{Iterate:} Repeat steps 2-4 until the change in error between iterations is below a predefined threshold.
+\end{enumerate}
+
+The iterative nature ensures that the alignment improves progressively, starting with coarse matches and refining them with each iteration.
+
+
+
+\subsection{f)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task06/pictures/firstiteration.png}
+    \caption{The ICP Algorithm in RVIZ first iteration }
+    \label{fig:firstit}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task06/pictures/lastiteration.png}
+    \caption{The ICP Algorithm in RVIZ last iteration }
+    \label{fig:firstit}
+\end{figure}
+
+\section{Exercise 2 Iterative Matching Range Point algorithm (IMRP)}
+
+\subsection{a)}
+
+The difference between the Matching Range Point (MRP) rule and the Closest Point (CP) rule lies in the criteria used for matching points:
+
+\begin{itemize}
+    \item \textbf{Closest Point (CP) Rule:} Matches each point in the new scan to the nearest point in the reference scan based on Euclidean distance.
+    \item \textbf{Matching Range Point (MRP) Rule:} Matches each point in the new scan to a point in the reference scan that lies within a specified angular range relative to the beam direction.
+
+\end{itemize}
+
+The MRP rule is not merely a variant of the CP rule but rather introduces an additional constraint (angular range), making it more selective. This is particularly useful in structured environments, as it considers geometric alignment beyond simple proximity.
+
+
+\subsection{b)}
+
+We implemented the method \texttt{ScanMatcher::findMatchesMRP}, which matches points based on the Matching Range Point (MRP) rule. Below is an overview of the implementation:
+
+\begin{itemize}
+    \item \textbf{Point Transformation:} Each new point is transformed using the provided rotation and translation.
+    \item \textbf{Matching Rule:} For each transformed point:
+    \begin{itemize}
+        \item Compute the vector from the origin to the transformed point and to each reference point.
+        \item Calculate the angular difference between these vectors and ensure it is within the angular limit \(B_w\).
+        \item Compare the difference in lengths of the vectors and select the reference point with the smallest length difference, provided it is below 0.15.
+    \end{itemize}
+    \item \textbf{Validation:} If a valid match is found, it is added to the list of matches.
+\end{itemize}
+
+The MRP rule ensures that matches are constrained not only by proximity but also by angular alignment, making it more robust in structured environments. 
+
+\textbf{Key Constraints:}
+\begin{itemize}
+    \item Angular difference must be less than \(B_w\).
+    \item Length difference must be below 0.15.
+\end{itemize}
+
+
+\subsection{c)}
+
+We implemented the Iterative Matching Range Point (IMRP) algorithm using the provided framework. Below is an overview of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item The initial angular threshold \(B_{w_0} = \frac{\pi}{6}\) and translation/rotation thresholds (\(0.02, 0.01\)) are defined.
+        \item A transformation object is initialized to track the cumulative alignment.
+    \end{itemize}
+    
+    \item \textbf{Iteration Process:}
+    For up to 100 iterations:
+    \begin{itemize}
+        \item \textbf{Threshold Update:}
+        \begin{itemize}
+            \item The angular threshold \(B_w = \max(B_{w_0} \cdot e^{-0.05i}, 0.05)\).
+            \item The distance threshold \(\texttt{distanceThreshold} = \max(0.5 \cdot e^{-0.1i}, 0.02)\).
+        \end{itemize}
+        \item \textbf{Matching:}
+        \begin{itemize}
+            \item Matches are computed using both the Closest Point (CP) rule (\texttt{findMatchesClosest}) and the Matching Range Point (MRP) rule (\texttt{findMatchesMRP}).
+        \end{itemize}
+        \item \textbf{Transformation Update:}
+        \begin{itemize}
+            \item Transformations are calculated for both sets of matches using Least Squares (\texttt{findTransformationLSQ}).
+            \item The translation and rotation are updated, combining the CP and MRP transformations.
+        \end{itemize}
+        \item \textbf{Convergence Check:}
+        \begin{itemize}
+            \item The algorithm terminates if the translation and rotation changes are below the thresholds (\(0.02\) and \(0.01\), respectively).
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+This approach ensures a robust alignment by combining the strengths of both the Closest Point and Matching Range Point rules.
+
+
+
+\section{Exercise 3 Iterative Dual Correspondence algorithm (IDC)}
+
+We implemented the Iterative Dual Correspondence (IDC) algorithm, which combines the Closest Point (CP) and Matching Range Point (MRP) rules. Below is an overview of the implementation:
+
+\begin{itemize}
+    \item \textbf{Dual Matching:}
+    \begin{itemize}
+        \item Matches are computed using both:
+        \begin{itemize}
+            \item \texttt{findMatchesClosest} (Closest Point rule).
+            \item \texttt{findMatchesMRP} (Matching Range Point rule).
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Dual Transformation:}
+    \begin{itemize}
+        \item Transformations are computed independently for each set of matches using the Least Squares method:
+        \begin{itemize}
+            \item \texttt{transform\_1} from CP matches.
+            \item \texttt{transform\_2} from MRP matches.
+        \end{itemize}
+        \item The final transformation combines:
+        \[
+        \texttt{transform} = (\texttt{transform\_1.t}, \texttt{transform\_2.w})
+        \]
+        where the translation from the CP rule and the rotation from the MRP rule are used.
+    \end{itemize}
+
+    \item \textbf{Convergence Check:}
+    \begin{itemize}
+        \item The algorithm checks whether the change in the differenz between the two last translations (\(< 0.02\)) and rotations (\(< 0.01\)) falls below the thresholds. If so, it terminates.
+    \end{itemize}
+\end{itemize}
+
+
+
+\end{document}

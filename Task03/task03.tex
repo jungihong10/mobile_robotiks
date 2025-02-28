@@ -1,0 +1,121 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{3}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+
+\renewcommand{\figurename}{Figure}
+
+
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Collision avoidance}
+\subsection{a)}
+
+We implemented a rectangular area in front of the robot that detects obstacles within this zone. If an obstacle is detected, the robot immediately stops and does not move until the obstacle is removed (for example, by placing and then removing a wooden box in front of it). The area has a width of 0.4 m and a length of 0.3 m, and these parameters are adjustable. As shown in Figure~\ref{fig:0.5object}, you cann see the green rectangle in front of the robot.
+
+\subsection{b)}
+
+Regarding the first rule, it is only partially met: while the robot itself does not harm any human due to the emergency stop, it does not prevent a human from harming themselves (e.g., if a person runs toward a wall, the robot does not intervene). Thus, this rule is only partially fulfilled.
+
+\noindent The second rule is met, as the robot only responds to commands from a human.
+
+\noindent The third rule is also fulfilled, as the robot stops in front of any obstacle, preventing it from damaging itself.
+
+\section{Exercise 2 Obstacle avoidance with the potential field method}
+
+\subsection{a)}
+
+We started the simulation using the Stage environment with the world file obstacles.world. In this setup, the robot consistently moves toward the lower right corner of the environment, even when manually placed in a different starting position.
+
+
+\subsection{b)}
+
+We modified the environment by adding additional obstacles to the simulation. To do this, we edited the obstacles.png file, adjusting it with an image editor such as Gimp. This allowed us to increase the complexity of the environment and test the robot's obstacle avoidance capabilities with different obstacle placements as shown in Figure~\ref{fig:modifed} 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task03/pictures/obstacles.png}
+    \caption{Modified enviroment}
+    \label{fig:modifed}
+\end{figure}
+
+
+
+
+\subsection{c)}
+We implemented the \textbf{potential field method} by creating a separate class called \texttt{PotentialField}. This class calculates the \textbf{attractive force vector} towards the goal position. We visualized this \textbf{goal vector} in RVIZ as a \textcolor{green}{green arrow} as shown in Figure~\ref{fig:greenarrow}, using \texttt{visualization\_msgs::msg::Marker} with type \texttt{ARROW} for clear visualization.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task03/pictures/greenarrow.jpg}
+    \caption{Visualization in RVIZ2 showing the goal position with a green arrow}
+    \label{fig:greenarrow}
+\end{figure}
+
+\subsection{d)}
+
+To account for obstacles, we divided the \textbf{area scanned by the laser} into \textbf{segments}. In each segment, the \textbf{closest obstacle} was identified, and a \textbf{repulsive force vector} was calculated. We visualized these \textbf{repulsive vectors} as \textcolor{red}{red arrows} in RVIZ, representing the direction and strength of the repulsive forces to push the robot away from obstacles as shown in Figure~\ref{fig:redarrow} 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task03/pictures/redarrow.jpg}
+    \caption{Visualization in RVIZ2 showing the divided area, each segment identifies a closest obstacle with a red arrow}
+    \label{fig:redarrow}
+\end{figure}
+
+
+
+\subsection{e)}
+
+\begin{comment}
+We calculated the \textbf{resultant force} by combining the \textbf{goal vector} and the \textbf{repulsive force vectors} from each obstacle. This resultant force is visualized as another \textcolor{blue}{arrow} in RVIZ, representing the direction and magnitude of the combined force. Using this resultant force, we determined the \textbf{steering angle} that guides the robot toward the goal while avoiding obstacles. This setup enables the robot to navigate safely from one corner of the environment to the other.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Excercise02/pictures/distances.jpeg}
+    \caption{Visualization in RVIZ2 showing the resultant force with a blue arrow}
+    \label{fig:bluearrow}
+\end{figure}
+\end{comment}
+
+
+\subsection{f)}
+
+Dividing the \textbf{laser scan area} into segments has both benefits and drawbacks. It simplifies calculations by focusing on the nearest obstacle in each segment, thus reducing computational load. However, this approach may miss obstacles outside the nearest segment, potentially resulting in suboptimal navigation.
+
+\subsection{g)}
+
+The \textbf{potential field method} can fail in scenarios where obstacles are close to the goal or create local minima. In such cases, the robot might get ``stuck'' between the attractive and repulsive forces, unable to proceed toward the goal due to a balance in forces.
+
+
+\subsection{h)}
+
+
+\subsection{i)}
+
+
+\subsection{j)}
+
+
+
+
+\end{document}

@@ -1,0 +1,197 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{7}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+\usepackage{tikz}
+
+
+\renewcommand{\figurename}{Figure}
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Interpolation}
+
+\subsection*{a)/b)/c)}
+
+We started the simulation with $stage\_ros$ and planned a path to visualize the A* algorithm and the calculated smoothed path as shown in figure~\ref{fig:smooth path}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task08/pictures/image.png}
+    \caption{Visualization of A* and smoothed path in Rviz}
+    \label{fig:smooth path}
+\end{figure}
+
+
+
+
+
+\section{Exercise 2 Orthogonal projection}
+
+\subsection*{a)}
+For each frame, the robot determines the nearest orthogonal projection onto a pose of the smoothed path. This is done by finding the closest pose on the path based on the Euclidean distance.
+
+\subsection*{b)}
+
+We define the sign of the projection based on the relative position of the robot to the path. This is determined using the perpendicular dot product between the vector from the robot to the nearest path point and the tangent vector of the path. A positive value indicates the robot is on one side of the path, while a negative value means it is on the other side.
+
+\subsection*{c)}
+
+
+We compute the control angle $\phi_c$ in the robot’s coordinate system. Added to the angle $\theta_t$ of the path tangent this results in the desired angle of the robot. This angle is used to adjust the robot's heading towards the path, ensuring smooth path-following.
+
+\section{Exercise 3 PID}
+
+\subsection*{a)}
+A \textbf{PID controller} (Proportional-Integral-Derivative controller) is a control system used to maintain a desired output by continuously adjusting an input variable based on feedback. It consists of three components:
+
+\begin{itemize}
+    \item \textbf{Proportional (P):} Reacts to the present error by adjusting the control variable proportionally to the difference between the desired value (setpoint) and the actual value.
+    \item \textbf{Integral (I):} Accounts for past errors by integrating the error over time and applying corrections to eliminate steady-state errors.
+    \item \textbf{Derivative (D):} Predicts future errors by analyzing the rate of change of the error and applying corrections to prevent overshooting.
+\end{itemize}
+
+The \textbf{time-continuous formula} for a PID controller is:
+
+\[
+u(t) = K_p e(t) + K_i \int e(\tau) d\tau + K_d \frac{d e(t)}{dt}
+\]
+
+where:
+\begin{itemize}
+    \item \( u(t) \) is the control output,
+    \item \( e(t) \) is the error (difference between setpoint and actual value),
+    \item \( K_p, K_i, \) and \( K_d \) are the proportional, integral, and derivative gains.
+\end{itemize}
+
+The \textbf{time-discrete formula} (used in digital implementations) is:
+
+\[
+u_k = K_p e_k + K_i \sum e_k \Delta t + K_d \frac{e_k - e_{k-1}}{\Delta t}
+\]
+
+where \( k \) represents the discrete time step, and \( \Delta t \) is the sampling interval.
+
+PID controllers are widely used in robotics, automation, and industrial applications to ensure stable and precise control.
+
+
+\subsection*{b)}
+
+\begin{comment}
+
+A control loop is a system designed to maintain a desired output by continuously adjusting an input based on feedback. The control loop consists of several key components:
+
+\begin{itemize}
+    \item \textbf{Setpoint (Reference, \( w \))}: The desired value of the controlled variable.
+    \item \textbf{Error (\( e \))}: The difference between the setpoint and the actual process value.
+    \item \textbf{Controller (e.g., PID)}: Computes the corrective action based on the error.
+    \item \textbf{Actuator}: Applies the controller's output to influence the system.
+    \item \textbf{Process (Plant)}: The system being controlled.
+    \item \textbf{Sensor (Measurement)}: Monitors the actual output and provides feedback.
+\end{itemize}
+
+The basic structure of a closed-loop control system is illustrated below:
+\end{comment}
+\begin{center}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+    \node [draw, rectangle] (controller) {Controller};
+    \node [draw, rectangle, right of=controller, node distance=4cm] (process) {Process (Plant)};
+    \node [draw, rectangle, right of=process, node distance=4cm] (sensor) {Sensor};
+    
+    \draw [->] (-2,0) node[left] {Setpoint (\( w \))} -- (0,0);
+    \draw [->] (controller) -- node[above] {Control Output} (process);
+    \draw [->] (process) -- node[above] {Actual Value (\( x \))} (sensor);
+    \draw [->] (sensor.south) |- ++(0,-1) -| node[pos=0.25, below] {Feedback} (controller.south);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{c)}
+We've implemented the PID Controller as a class Structure.
+
+
+\subsection*{d)}
+The robot is following the given smoothed path.
+
+\subsection*{e)}
+We followed a path in the simulation:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task08/pictures/simulation_Kp5_variableVel_k3.png}
+    \caption{PID controlled path following in simulation}
+    \label{fig:PID controlled path simulation}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task08/pictures/simulation_Kp5_variableVel_k3_plot.png}
+    \caption{measured and desired angle and error of path following in the simulation}
+    \label{fig:Plot Data simulation}
+\end{figure}
+
+
+\subsection*{f)}
+
+\section{Exercise 4: Navigation}
+\subsection*{a)}
+We tested the program on the real robot, and it successfully followed the planned path.
+
+\subsection*{b)}
+We integrated the mapping node with the cost map, ensuring that the generated map is correctly published and used for path planning.
+
+\subsection*{c)}
+
+The robot successfully follows the planned path.
+
+\subsection*{d)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task08/pictures/path_real.png}
+    \caption{Pathplanning with the Costmap in the simulation}
+    \label{fig:PID controlled path real robot}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task08/pictures/plot_real.png}
+    \caption{Pathplanning with the Costmap in the simulation}
+    \label{fig:Plot Data real robot}
+\end{figure}
+
+\subsection*{e)}
+We integrated the obstacle avoidance approach into the navigation system.  
+The robot switches to the obstacle avoidance node if it is in the warning zone of the Costmap (we check if the robot's current position or a position along the future path (50 poses ahead of the path $\rightarrow$ approx. 1 meter) grid cell cost is above 50), if yes, switch to obstacle avoidance, if no stay in path following node and continue following the planned path.
+
+When no obstacles are nearby, the standard path following behavior is resumed.  
+
+\subsection*{f)}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Task08/pictures/image1.png}
+    \caption{Actual and the desired path of the real robot in Rviz}
+    \label{fig:actual and the desired path}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass{article}
+
+% Punkte-Variable definieren
+\newcounter{points}
+\newcommand{\addpoints}[1]{\addtocounter{points}{#1}}
+
+% Punkte-Umgebung für Aufgaben
+\newenvironment{task}[1]
+  {
+    \par \noindent \textbf{Aufgabe #1} \par
+    \addpoints{#1}
+  }
+  {\par}
+
+\begin{document}
+
+\section*{Punktetracking Mobile Robotics}
+
+% Aufgabe mit Punktzahl
+\begin{task}{17.5}
+17,5 von 20\end{task}
+
+\begin{task}{3}
+  Diese Aufgabe ist 3 Punkte wert.
+\end{task}
+
+% Gesamtpunktzahl anzeigen
+\bigskip
+\textbf{Gesamtpunktzahl: \thepoints{}}
+
+\end{document}

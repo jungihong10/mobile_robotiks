@@ -1,0 +1,449 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{3}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+
+\renewcommand{\figurename}{Figure}
+
+
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Creating a grid map}
+
+\subsection{a)}
+
+In this task, we used the \texttt{nav\_msgs::msg::OccupancyGrid} data structure to represent a grid-based map of the environment. The value of each cell is the probability of the cell being occupied by an obstacle as percentage, with each cell initialized to 50, indicating an unknown state.
+
+\noindent The goal was to update the map in each frame by:
+\begin{itemize}
+    \item Marking the cell in which the robot is located as \textbf{free} (i.e., probability of 0\%, since ).
+    \item Marking the cells corresponding to each laser scan point as \textbf{occupied} (i.e., probability of 100\%).
+\end{itemize}
+
+
+\noindent The following figure~\ref{fig:gridmap} shows the occupancy grid created using RViz. The grid is visualized with cells marked as either occupied (black) or unkown (gray).
+In this figure, the free cell in which the robot is located is falsely on the odom Axis. We have fixed that.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task04/pictures/a.jpg}
+    \caption{Gridmap in RVIZ2}
+    \label{fig:gridmap}
+\end{figure}
+
+
+\subsection{b)}
+
+In this task, the cells between the robot's position and each laser point must be marked as free, as they are part of the direct line of sight. The traversal is implemented using the Amanatides and Woo algorithm by the provided \texttt{GridTraversal} class.
+
+\noindent The GridTraversal class implements the Amanatides and Woo algorithm, which efficiently traverses grid cells along a line. It determines the cells to be marked as free between the robot and each laser endpoint as shown in Figure~\ref{fig:gridtraversel}.
+
+\noindent The algorithm steps from the starting cell to the ending cell based on the direction of the laser beam. It uses \texttt{mTMaxX} and \texttt{mTMaxY} to decide whether to step in the x or y direction next, ensuring all cells along the line are visited.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task04/pictures/b.png}
+    \caption{Gridtraversal in RVIZ2}
+    \label{fig:gridtraversel}
+\end{figure}
+
+\begin{lstlisting}[language=C++, caption= Usage of GridTraversal in Mapping::Update]
+GridTraversal gridTraversal(cellX, cellY, laserCellX, laserCellY);
+\end{lstlisting}
+In this example, \texttt{cellX} and \texttt{cellY} represent the robot's position in the grid, while \texttt{laserCellX} and \texttt{laserCellY} are the coordinates of the laser endpoint. The \texttt{GridTraversal} instance will be used to traverse all cells between these two points.
+
+
+
+\subsection{c)}
+
+\section*{Stepwise Proof of Formula (36.2)}
+
+\subsection*{(i) Explanation of \( P(z_t | m_l \land z_{1:t-1}) = P(z_t | m_l) \)}
+The equation holds because the observation \( z_t \) is conditionally independent of previous observations \( z_{1:t-1} \), given the occupancy state \( m_l \). Formally, this follows from the independence property:
+\[
+P(z_t | m_l, z_{1:t-1}) = P(z_t | m_l).
+\]
+This reflects the assumption that the observation \( z_t \) depends only on the occupancy state \( m_l \) of the grid cell and not on prior measurements.
+
+\subsection*{(ii) Applying Bayes' Theorem}
+To solve part (ii), we use Bayes' theorem along with the result from part (i) to express the occupancy probability incrementally.
+
+\noindent First, using Bayes' theorem, we can express the posterior probability \( P(m_l | z_{1:t}) \) as follows:
+
+\[
+P(m_l | z_{1:t}) = \frac{P(z_t | m_l) P(m_l | z_{1:t-1})}{P(z_t | z_{1:t-1})}
+\]
+
+Where:
+\begin{itemize}
+    \item \( P(m_l | z_{1:t}) \): Posterior occupancy probability of cell \( m_l \) given measurements up to time \( t \).
+    \item \( P(z_t | m_l) \): Likelihood of obtaining the current measurement \( z_t \) given cell \( m_l \) is occupied.
+    \item \( P(m_l | z_{1:t-1}) \): Prior probability given all previous measurements up to \( t-1 \).
+    \item \( P(z_t | z_{1:t-1}) \): Normalization factor.
+\end{itemize}
+
+From part (i), we know that:
+
+\[
+P(z_t | m_l \land z_{1:t-1}) = P(z_t | m_l)
+\]
+
+\noindent This means that \( z_t \) is conditionally independent of past observations \( z_{1:t-1} \) given the state of cell \( m_l \). Therefore, we can simplify the Bayes' theorem equation as:
+
+\[
+P(m_l | z_{1:t}) = \frac{P(z_t | m_l) P(m_l | z_{1:t-1})}{P(z_t)}
+\]
+
+\noindent This expression allows us to compute the updated probability of occupancy of cell \( m_l \) by combining prior knowledge with the latest sensor information.
+
+
+\subsection*{(iii) Deriving \( P(\neg m_l | z_{1:t}) \)}
+To derive the conditional probability \( P(\neg m_l | z_{1:t}) \) for a cell being free, we use the complementary relationship:
+
+\[
+P(m_l | z_{1:t}) + P(\neg m_l | z_{1:t}) = 1
+\]
+
+Thus:
+
+\[
+P(\neg m_l | z_{1:t}) = 1 - P(m_l | z_{1:t})
+\]
+
+Using the odds representation for \( P(m_l | z_{1:t}) \):
+
+\[
+P(m_l | z_{1:t}) = \frac{\text{Odds}(m_l | z_{1:t})}{1 + \text{Odds}(m_l | z_{1:t})}
+\]
+
+\noindent The probability of the cell being free is then:
+
+\[
+P(\neg m_l | z_{1:t}) = 1 - \frac{\text{Odds}(m_l | z_{1:t})}{1 + \text{Odds}(m_l | z_{1:t})}
+\]
+
+\[
+P(\neg m_l | z_{1:t}) = \frac{1}{1 + \text{Odds}(m_l | z_{1:t})}
+\]
+
+\subsection*{(iv) Calculating the Quotient \( Q \)}
+We are asked to calculate the quotient \( Q \) given by:
+
+\[
+Q = \frac{P(m_l | z_{1:t})}{P(\neg m_l | z_{1:t})}
+\]
+
+and simplify it by replacing \( P(\neg m_l | X) \) with \( 1 - P(m_l | X) \).
+
+\subsection*{Derivation}
+
+First, substitute the definitions:
+
+\[
+Q = \frac{P(m_l | z_{1:t})}{1 - P(m_l | z_{1:t})}
+\]
+
+Using the odds representation:
+
+\[
+P(m_l | z_{1:t}) = \frac{\text{Odds}(m_l | z_{1:t})}{1 + \text{Odds}(m_l | z_{1:t})}
+\]
+
+\[
+P(\neg m_l | z_{1:t}) = \frac{1}{1 + \text{Odds}(m_l | z_{1:t})}
+\]
+
+Substituting these into \( Q \):
+
+\[
+Q = \frac{\frac{\text{Odds}(m_l | z_{1:t})}{1 + \text{Odds}(m_l | z_{1:t})}}{\frac{1}{1 + \text{Odds}(m_l | z_{1:t})}}
+\]
+
+The denominators cancel out, giving:
+
+\[
+Q = \text{Odds}(m_l | z_{1:t}) = \frac{P(m_l | z_{1:t})}{1 - P(m_l | z_{1:t})}
+\]
+
+Thus, the quotient \( Q \) is equal to the odds representation of the occupancy probability.
+
+
+\subsection*{(v) Solving for \( P(m_l | z_{1:t}) \)}
+We are given the equation:
+\begin{comment}
+
+We are asked to solve the equation for \( P(m_l | z_{1:t}) \):
+
+\[
+\frac{P(m_l | z_{1:t})}{P(\neg m_l | z_{1:t})} = Q
+\]
+
+Let:
+
+\[
+P(m_l | z_{1:t}) = p
+\]
+
+Then:
+
+\[
+\frac{p}{1 - p} = Q
+\]
+
+To solve for \( p \):
+
+\begin{enumerate}
+    \item Multiply both sides by \( (1 - p) \):
+    \[
+    p = Q (1 - p)
+    \]
+    
+    \item Expand:
+    \[
+    p = Q - Qp
+    \]
+    
+    \item Move \( Qp \) to the left-hand side:
+    \[
+    p + Qp = Q
+    \]
+    
+    \item Factor out \( p \):
+    \[
+    p (1 + Q) = Q
+    \]
+    
+    \item Divide by \( (1 + Q) \):
+    \[
+    p = \frac{Q}{1 + Q}
+    \]
+\end{enumerate}
+
+\subsection*{Conclusion}
+
+The solution for \( P(m_l | z_{1:t}) \) is:
+
+\[
+P(m_l | z_{1:t}) = \frac{Q}{1 + Q}
+\]
+
+Comparing this with equation (36.2):
+
+\[
+p(m_l | x_{1:t}, z_{1:t}) = \left( 1 + \left( \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)} \right) \cdot \frac{p(m_l)}{1 - p(m_l)} \times \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})} \right)^{-1}
+\]
+
+we see that both represent an incremental update of the occupancy probability using the odds ratio.
+
+\end{comment}
+
+\noindent The goal is to solve the following equation for \( P(m_l | z_{1:t}) \):
+
+\[
+\frac{P(m_l | z_{1:t})}{P(\neg m_l | z_{1:t})} = Q
+\]
+
+\noindent Define:
+
+\[
+P(m_l | z_{1:t}) = p
+\]
+
+\noindent Then we have:
+
+\[
+\frac{p}{1 - p} = Q
+\]
+
+\noindent We solve for \( p \) by multiplying both sides by \( (1 - p) \):
+
+\[
+p = Q (1 - p)
+\]
+
+\noindent Expanding gives:
+
+\[
+p = Q - Qp
+\]
+
+\noindent Move the term involving \( p \) to the left-hand side:
+
+\[
+p + Qp = Q
+\]
+
+\noindent Factor out \( p \):
+
+\[
+p (1 + Q) = Q
+\]
+
+\noindent Finally, divide by \( (1 + Q) \):
+
+\[
+p = \frac{Q}{1 + Q}
+\]
+
+\noindent To obtain equation (36.2), we need to expand the term \( Q \) in detail. The term \( Q \) represents the combined effect of multiple observations and prior knowledge. Specifically, it takes into account:
+
+\begin{itemize}
+    \item \textbf{Likelihood Update Based on Current Measurement:} This term accounts for the current measurement \( z_t \) at position \( x_t \). The corresponding odds ratio is given by:
+    \[
+    \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)}
+    \]
+    where \( p(m_l | x_t, z_t) \) is the probability that the cell is occupied given the current measurement.
+
+    \item \textbf{Prior Probability:} The prior knowledge of the occupancy of the cell is represented by the odds:
+    \[
+    \frac{p(m_l)}{1 - p(m_l)}
+    \]
+
+    \item \textbf{Previous Posterior Estimate:} The previous belief about the occupancy of the cell, based on measurements up to time \( t-1 \), is represented by:
+    \[
+    \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})}
+    \]
+\end{itemize}
+
+\noindent Combining these factors, we can write \( Q \) as:
+
+\[
+Q = \left( \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)} \right) \cdot \left( \frac{p(m_l)}{1 - p(m_l)} \right) \cdot \left( \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})} \right)
+\]
+
+\noindent Substituting Back to Find \( p(m_l | x_{1:t}, z_{1:t}) \)
+We have:
+
+\[
+p = \frac{Q}{1 + Q}
+\]
+
+\noindent Substituting the expanded form of \( Q \):
+
+\[
+p(m_l | x_{1:t}, z_{1:t}) = \frac{Q}{1 + Q}
+\]
+
+\noindent Where:
+
+\[
+Q = \left( \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)} \right) \cdot \left( \frac{p(m_l)}{1 - p(m_l)} \right) \cdot \left( \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})} \right)
+\]
+
+\noindent Finally, we can express \( p(m_l | x_{1:t}, z_{1:t}) \) in the form of equation (36.2):
+
+\[
+p(m_l | x_{1:t}, z_{1:t}) = \left( 1 + \left( \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)} \right) \cdot \frac{p(m_l)}{1 - p(m_l)} \times \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})} \right)^{-1}
+\]
+
+\noindent This matches equation (36.2) as presented in the original text, and represents the incremental update of the occupancy probability for a cell in a grid map using Bayesian inference.
+
+
+
+\subsection*{(vi) Simplification with \( P(m_l) = 0.5 \)}
+Assuming \( P(m_l) = 0.5 \), the prior probabilities simplify to:
+\[
+P(m_l) = P(\neg m_l) = 0.5.
+\]
+
+\noindent which leads to:
+\[
+p(m_l | x_{1:t}, z_{1:t}) = \left( 1 + \left( \frac{1 - p(m_l | x_t, z_t)}{p(m_l | x_t, z_t)} \right) \cdot \left( \frac{1 - p(m_l | x_{1:t-1}, z_{1:t-1})}{p(m_l | x_{1:t-1}, z_{1:t-1})} \right) \right) ^{-1}
+\]
+\noindent which also leads to:
+
+
+\begin{equation}
+p(m_l | x_{1:t}, z_{1:t}) = \frac{p_{\text{occ}} \cdot \text{priorProb}}{p_{\text{occ}} \cdot \text{priorProb} + p_{\text{free}} \cdot (1 - \text{priorProb})}
+\label{eqn:probability}
+\end{equation}
+
+
+\noindent This reduces the complexity of computations involving the prior probabilities.
+
+\subsection*{(vii) Basic Assumption of the Gridmap Approach}
+The gridmap approach assumes that each grid cell is independent and that the occupancy probability is updated incrementally using sensor observations. This independence simplifies the calculations but assumes that sensor noise and correlations are handled adequately.
+
+
+\subsection{d)}
+
+\noindent In order to probabilistically update the occupancy grid in each frame, we used formula ~\ref{eqn:probability} and selected appropriate values for the probabilities \( p_{\text{occ}} \) and \( p_{\text{free}} \):
+
+\begin{itemize}
+    \item The probability of occupancy, \( p_{\text{occ}} \), was set to:
+    \[
+    p_{\text{occ}} = 0.9
+    \]
+    This value indicates high confidence that a detected cell is occupied.
+
+    \item The probability of being free, \( p_{\text{free}} \), was set to:
+    \[
+    p_{\text{free}} = 0.1
+    \]
+    This value represents a reasonable confidence that if no obstacle is detected in a particular cell, it is most likely free.
+\end{itemize}
+
+
+\subsection{e)}
+As seen in figure~\ref{fig:gridtraversel}, noise in the data can cause map miscalculations. To address this, the method filters out noisy points by comparing each current laser point with points from previous scans. A point is retained if it lies within a defined threshold distance to any previous point; otherwise, it is discarded. This ensures that only more consistent measurements contribute to the map, reducing errors caused by random or erroneous data as seen in figure~\ref{fig:noisecanc}. Additionally, we implemented a maximum update rate towards the cell being \textbf{free} if the cell's probability exceeded a certainty threshold for being occupied (i.e. the cell's previous value was $> 50$). Setting this rate solidified the walls and reduced flickering.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task04/pictures/final_map.png}
+    \caption{Simulation corridor Test}
+    \label{fig:noisecanc}
+\end{figure}
+
+
+
+
+\subsection{f)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task04/pictures/room_corridor.png}
+    \caption{Real lab Test}
+    \label{fig:reallab}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task04/pictures/sim.png}
+    \caption{Simulation corridor Test}
+    \label{fig:corridor}
+\end{figure}
+
+
+\noindent We noticed that the laser is not properly synchronized with odometry. This is likely caused by the robot sliding when accelerating or decelerating too quickly. For example, when moving quickly back and forth in front of a wall, the position of the wall shifts in RVIZ. This results in more black areas being marked on the map.
+For example, in figure~\ref{fig:corridor}, when the robot moves down, the corner is mapped accurately. However, as the robot moves to the right and then returns, the same corner appears slightly displaced.
+
+\noindent The same can be observed in the real test, visible in figure ~\ref{fig:reallab}. After mapping the room we drove through the corridor outside and upon returning to the room noticed that the positions of the walls had shifted as well.
+
+
+
+\subsection{g)}
+
+If you switch to using ultrasonic sensors instead of a laser scanner, several adjustments are necessary. Ultrasonic sensors have a narrower field of view and lower accuracy, so you need to combine the readings from all five sensors to cover the environment effectively. The occupancy grid update logic must be modified to aggregate and handle multiple inputs, and the resolution of the grid should be reduced to match the lower precision of the sensors. Since the sonars only report the distance of a detection within their sensor cone, updating a specific cell as being occupied does not accurately represent the true uncertainty of the measurement. Instead, all possible occupied cells in the cone at the measured distance should be updated and the robot should change position and try to triangulate the specific position of the obstacle in the grid.
+
+
+
+
+\end{document}

@@ -1,0 +1,47 @@
+\documentclass{article}
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+\renewcommand{\figurename}{Figure}
+
+
+% Punkte-Variable definieren
+\newcounter{points}
+\newcommand{\addpoints}[1]{\addtocounter{points}{#1}}
+
+% Punkte-Umgebung für Aufgaben
+\newenvironment{task}[1]
+  {
+    \par \noindent \textbf{Aufgabe #1} \par
+    \addpoints{#1}
+  }
+  {\par}
+
+\begin{document}
+
+\section*{Obstacle Avoidance}
+Fix the range, to 180 Degree, get the middle of each segment with the angle, and put the provided force into it, so smooth out noise.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{FixStuff/pictures/ObstacleAvoidance.pdf}
+    \caption{}
+    \label{fig:bluearrow}
+\end{figure}
+
+\section*{Mapping}
+
+Fix noises, sometimes if there's a wall it detects something further between the wall.
+-> Done
+
+Fix free space in front of robot, if scan is nan or inf
+
+
+\end{document}

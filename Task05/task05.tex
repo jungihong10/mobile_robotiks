@@ -1,0 +1,228 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{5}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+
+\renewcommand{\figurename}{Figure}
+
+
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Detection of a coloured ball}
+
+
+\subsection{a)}
+
+
+We tested the task by using the provided bag files from \texttt{kinect\_bag\_files.zip}. After starting \texttt{RViz} and playing the bag file, we were able to view the video with the colored balls seen in figure~\ref{fig:kinect}. The \texttt{ball\_tracking} framework program was successfully built.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/simulation.jpg}
+    \caption{Simulation kinect test}
+    \label{fig:kinect}
+\end{figure}
+
+
+
+\subsection{b)}
+
+The Microsoft Kinect which is used in this course uses a combination of RGB and depth-sensing technologies to generate colored 3D data. 
+
+\subsection*{Components}
+\begin{itemize}
+    \item \textbf{IR Projector:} Projects infrared (IR) light patterns onto the scene.
+    \item \textbf{IR Camera:} Captures the reflected IR pattern from the scene.
+    \item \textbf{Color Camera:} Captures RGB data to provide color information.
+\end{itemize}
+
+\subsection*{Underlying Principle}
+\begin{itemize}
+    \item The system employs \textit{matricial active triangulation}, where the IR projector emits coded patterns onto the scene.
+    \item The distortion in these patterns, captured by the IR camera, is analyzed to compute depth information.
+    \item Depth ($z$) is derived using the disparity (horizontal shift) between corresponding points in the projected and captured patterns, as per the disparity-depth mapping equation.
+\end{itemize}
+
+\subsection*{Combining Data}
+\begin{itemize}
+    \item The Kinect generates a \textit{disparity map} from the IR images to calculate the 3D geometry.
+    \item RGB data from the color camera is then overlaid onto this geometry, producing colored 3D representations.
+\end{itemize}
+
+\subsection*{Performance}
+The Kinect can estimate 3D geometry at 30 frames per second with a spatial resolution of $640 \times 480$ pixels.
+
+
+\subsection{c)}
+
+The algorithm is an iterative method designed to estimate the parameters of a mathematical model from a dataset containing a important number of outliers.
+
+\noindent First a small, random subset of points from the dataset is selected. This subset must be large enough to define the model, such as two points for a line or three points for a plane. Using this subset, the parameters of the model are estimated.
+
+\noindent Next, the algorithm evaluates how well the model fits the entire dataset by calculating the number of points that lie within a certain tolerance of the model. These points are considered consistent with the estimated model.
+
+\noindent This process of sampling, estimating, and verifying is repeated for a predetermined number of iterations or until a best model is found. The goal is to identify the model that has the highest number of inliers or best fits the data.
+
+\noindent Once the best model is selected, it can be refined by recalculating its parameters using all inliers, for improving its accuracy.
+
+\noindent It is very robust against outliers, as it focuses on maximizing agreement among points that support the model while ignoring those that do not.
+
+
+
+\subsection{d)}
+
+For this task, two separate functions were implemented: one for detecting and extracting the ground plane as seen in figure~\ref{fig:floor} and another for walls as seen in figure~\ref{fig:wall}. Both functions utilize the Point Cloud Library (PCL) and the RANSAC segmentation algorithm with plane fitting.
+
+\noindent The two functions, \texttt{findAndExtractFloor} and \texttt{findAndExtractWalls}, share a similar structure and follow these steps:
+
+\begin{itemize}
+    \item \textbf{Segmentation:} Both use \texttt{pcl::SACSegmentationFromNormals} with \texttt{SACMODEL\_NORMAL\_PLANE} to detect planar surfaces.
+    \item \textbf{Validation:} A minimum of 500 inliers is required to validate the detected plane.
+    \item \textbf{Extraction:} The detected plane points are extracted from the point cloud, and the remaining points are updated for further processing.
+    \item \textbf{Publishing:} The extracted planes are published to their respective topics (\texttt{/floor} for ground planes, \texttt{/walls} for vertical planes).
+\end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/floor.jpg}
+    \caption{Extract the floor, wall is removed}
+    \label{fig:floor}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/wall.jpg}
+    \caption{Extract the wall, floor is removed}
+    \label{fig:wall}
+\end{figure}
+
+
+
+\subsection{e)}
+
+\subsection*{Plane Detection}
+To detect a plane, at least \textbf{3 points} are required. A plane in 3D space is described by the equation:
+\[
+ax + by + cz + d = 0
+\]
+This equation has three degrees of freedom (\(a, b, c\)), as the fourth parameter \(d\) is determined once the normal vector is fixed. Therefore, \textbf{3 points} are the theoretical minimum needed. In practice we set this parameter to 1000 points.
+\newline
+
+\noindent In our code, the minimum number of points required for the consensus set is defined indirectly through the configuration of the segmentation algorithms and parameters.
+
+\noindent For detecting a floor, the relevant parameters are configured as follows:
+\begin{itemize}
+    \item \texttt{seg.setDistanceThreshold(0.03)}: This specifies the maximum distance a point can be from the model to be considered an inlier.
+    \item \texttt{get\_parameter(iterations\_plane)}: This sets the number of iterations for RANSAC to find the best model.
+\end{itemize}
+
+\noindent For detecting a wall we changed the \textbf{DistanceThreshold} to $.3$, as the wall in the ros bag is not flat and needs a higher tolerance to be detected as one plane.\\
+\newline
+Additionally, the following condition ensures that the detected plane has a robust consensus set:
+\begin{quote}
+\texttt{if (inliers->indices.size() <= 1000) \{\\
+    PCL\_ERROR (Could not estimate a planar model for the given dataset.);\\
+    return false;\\
+\}}
+\end{quote}
+Here, at least \textbf{1000 points} are required for the consensus set to validate a plane.
+
+\subsection*{Sphere Detection}
+
+To detect a sphere with an unknown radius, at least \textbf{4 points} are necessary. A sphere in 3D space is defined by the equation:
+\[
+(x - x_0)^2 + (y - y_0)^2 + (z - z_0)^2 = r^2
+\]
+This equation has 4 parameters: the center of the sphere \((x_0, y_0, z_0)\) and the radius \(r\). Thus, \textbf{4 points} are required to determine these parameters.
+
+
+For detecting a sphere, the configuration is defined as:
+\begin{itemize}
+    \item \texttt{seg.setDistanceThreshold(get\_parameter(sphere\_distance\_threshold))}: Specifies the maximum distance for inliers to the sphere model.
+    \item \texttt{get\_parameter(iterations\_sphere)}: Sets the number of iterations for RANSAC to find the sphere model.
+\end{itemize}
+
+The minimum number of points required for a sphere is controlled by the condition:
+\begin{quote}
+\texttt{if (inliers->indices.size() <= 500) \{\\
+    PCL\_ERROR (No more spheres found.);\\
+    continue;\\
+\}}
+\end{quote}
+This ensures that at least \textbf{500 points} must fit the sphere model for a valid ball detection.
+
+
+\subsection{f)}
+
+The function \texttt{findAndExtractBalls} detects and extracts balls from the point cloud as seen in figure~\ref{fig:balls} using \texttt{pcl::SACSegmentationFromNormals} with the model type \\ \texttt{pcl::SACMODEL\_NORMAL\_SPHERE}. 
+
+\noindent The process iteratively identifies spheres:
+\begin{itemize}
+    \item \textbf{Segmentation:} For each iteration, the segmentation algorithm identifies points that fit a sphere model, using configurable parameters like the distance threshold and maximum iterations.
+    \item \textbf{Validation:} A minimum of 50 inliers is required to validate a sphere.
+    \item \textbf{Extraction:} Detected points are extracted, their center is computed, and the sphere is removed from the input cloud for the next iteration.
+    \item \textbf{Color:} The function \texttt{extractBall} computes the mean color (red, green, blue) of the sphere points and stores the ball's center position in the output cloud and changes the color of the points of the ball color to the average.
+    \item \textbf{Publishing:} All detected spheres are published as a point cloud for visualization in RViz.
+\end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/balls.jpg}
+    \caption{Extract the balls, everything else is removed}
+    \label{fig:balls}
+\end{figure}
+
+
+In RVIZ, we have multiple PointCloud topics (wall, floor and balls). If we enable all of them, we get most of the original image as shown in figure~\ref{fig:together}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/together.png}
+    \caption{Enable all topics to get the original image}
+    \label{fig:together}
+\end{figure}
+
+
+\subsection{g)}
+For each detected ball, the algorithm calculates the mean color of the points within its region. Based on this mean value, it determines whether the ball is yellow by evaluating the dominant color component. If a yellow ball is identified, its position is calculated and published as the goal position. The goal is published as a \textbf{PoseStamped} message and thus does not point towards anything in particular. This information is then visualized in RViz as seen in figure~\ref{fig:blueball}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/final.png}
+    \caption{The position of the yellow ball as goal position}
+    \label{fig:blueball}
+\end{figure}
+
+\subsection{h)}
+
+When testing the detection with the real robot almost all visible points get detected by "the" 'Walls' plane detector, including the balls and most of the floor. This could possibly be fixed by reducing the distance threshold. The 'Floor' plane detector only detects some parts of the floor and the 'Balls' sphere detector does not identify the balls, maybe because their points were already removed from PointCloud.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task05/pictures/real.png}
+    \caption{}
+    \label{fig:blueball}
+\end{figure}
+
+
+\end{document}

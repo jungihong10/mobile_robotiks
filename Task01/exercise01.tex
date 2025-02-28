@@ -1,0 +1,107 @@
+% ----------------------- TODO ---------------------------
+% Diese Daten müssen pro Blatt angepasst werden:
+\newcommand{\NUMBER}{1}
+\newcommand{\EXERCISES}{3}
+% Diese Daten müssen einmalig pro Vorlesung angepasst werden:
+\newcommand{\COURSE}{Mobile Robots}
+\newcommand{\TUTOR}{}
+\newcommand{\STUDENTA}{Kilian Hunter}
+\newcommand{\STUDENTB}{Tarik Eker}
+\newcommand{\STUDENTC}{}
+\newcommand{\DEADLINE}{23.10.2024}
+% ----------------------- TODO ---------------------------
+
+\documentclass[a4paper]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pdflscape}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{polynom}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{forloop}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{fancybox}
+\usepackage{tikz}
+\usepackage{booktabs}
+
+\input kvmacros
+
+%Größe der Ränder setzen
+\geometry{a4paper,left=3cm, right=3cm, top=3cm, bottom=3cm}
+
+%Kopf- und Fußzeile
+\pagestyle {fancy}
+\fancyhead[L]{Tutor: \TUTOR}
+\fancyhead[C]{\COURSE}
+\fancyhead[R]{\today}
+
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{Seite \thepage /\pageref*{LastPage}}
+
+%Formatierung der Überschrift, hier nichts ändern
+\def\header#1#2{
+  \begin{center}
+    {\Large Exercise #1}\\
+    {(Submission Deadline #2)}
+  \end{center}
+}
+
+%Definition der Punktetabelle, hier nichts ändern
+\newcounter{punktelistectr}
+\newcounter{punkte}
+\newcommand{\punkteliste}[2]{%
+  \setcounter{punkte}{#2}%
+  \addtocounter{punkte}{-#1}%
+  \stepcounter{punkte}%<-- also punkte = m-n+1 = Anzahl Spalten[1]
+  \begin{center}%
+  \begin{tabularx}{\linewidth}[]{@{}*{\thepunkte}{>{\centering\arraybackslash} X|}@{}>{\centering\arraybackslash}X}
+      \forloop{punktelistectr}{#1}{\value{punktelistectr} < #2 } %
+      {%
+        \thepunktelistectr &
+      }
+      #2 &  $\Sigma$ \\
+      \hline
+      \forloop{punktelistectr}{#1}{\value{punktelistectr} < #2 } %
+      {%
+        &
+      } &\\
+      \forloop{punktelistectr}{#1}{\value{punktelistectr} < #2 } %
+      {%
+        &
+      } &\\
+    \end{tabularx}
+  \end{center}
+}
+
+\begin{document}
+
+\begin{tabularx}{\linewidth}{m{0.2 \linewidth}X}
+  \begin{minipage}{\linewidth}
+    \STUDENTA\\
+    \STUDENTB\\
+    \STUDENTC
+  \end{minipage} & \begin{minipage}{\linewidth}
+    \punkteliste{1}{\EXERCISES}
+  \end{minipage}\\
+\end{tabularx}
+
+\header{Nr. \NUMBER}{\DEADLINE}
+
+
+
+
+
+\end{document}

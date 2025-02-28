@@ -1,0 +1,263 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{2}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\renewcommand{\figurename}{Figure}
+
+
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Laser scanner}
+\subsection{a)}
+
+\begin{itemize}
+    \item \textbf{Time-of-Flight (ToF) Sensors}: These sensors measure distance by calculating the time it takes for a laser pulse to travel to an object and return.
+
+    \item \textbf{Triangulation Sensors}: Triangulation sensors determine distance by projecting a laser beam onto a target and capturing the reflected light's angle using a detector. The distance is calculated by applying trigonometric principles based on this angle.
+
+    \item \textbf{Phase-Shift Sensors}: These sensors measure distance by comparing the phase shift between emitted and reflected laser light. By analyzing the phase difference \(\Delta \phi\), the sensor can calculate the distance \(d\) to the object accurately.
+\end{itemize}
+
+\subsection{b)}
+Modulation range sensors face a key limitation: ambiguity in distance measurement. Due to the periodic nature of the modulation, these sensors have a maximum unambiguous range. If an object is positioned beyond this range, the measurement cycles back, creating potential errors as it’s challenging to differentiate the actual range from multiples of the modulation period.\\
+
+\noindent For time-of-flight (ToF) sensors, there is no mention of comparable ambiguity restrictions in the document, as these sensors measure distance by calculating the travel time of a laser pulse directly.
+
+\subsection{c)}
+
+The Hokuyo URG-04LX laser scanner used in your robots is an Amplitude Modulated Continuous Wave (AMCW) sensor. This type of sensor emits an infrared beam that reflects off surfaces, and by comparing the phases of emitted and reflected light, it calculates the distance to the object.
+
+\subsection{d)}
+
+Our ROS node, implemented in the \texttt{simple\_laser} package, subscribes to the \texttt{/scan} topic and outputs:
+\begin{itemize}
+    \item Number of distance measurements per scan,
+    \item Angle increment between two subsequent rays,
+    \item Orientation of the first and last rays.
+\end{itemize}
+
+\subsection{e)}
+
+\begin{itemize}
+    \item \textbf{Number of distance measurements per scan}: \( n \)
+    \item \textbf{Angle difference between two subsequent rays}: \( \Delta \theta \)
+    \item \textbf{Orientation of the first ray}: \( \theta_0 \)
+    \item \textbf{Orientation of the last ray}: \( \theta_{n-1} \)
+\end{itemize}
+
+Let:
+\begin{itemize}
+    \item \( r_i \) be the distance measurement for the \( i^{\text{th}} \) ray.
+    \item \( \theta_i \) be the angle for the \( i^{\text{th}} \) ray, given by:
+    \[
+    \theta_i = \theta_0 + i \cdot \Delta \theta, \quad \text{where } i = 0, 1, \ldots, n-1
+    \]
+\end{itemize}
+
+To convert each polar coordinate \( (r_i, \theta_i) \) to Cartesian coordinates \( (x_i, y_i) \):
+\[
+x_i = r_i \cdot \cos(\theta_i)
+\]
+\[
+y_i = r_i \cdot \sin(\theta_i)
+\]
+
+For each ray \( i \) from \( 0 \) to \( n-1 \) we need to first compute the angle: 
+
+$$\theta_i = \theta_0 + i \cdot \Delta \theta$$
+
+and then use the distance $r_i$ to calculate the coordinates:
+
+$$x_i = r_i \cdot \cos(\theta_i)$$
+
+$$y_i = r_i \cdot \sin(\theta_i)$$
+
+The points \( (x_i, y_i) \) represent the 2D position of each measurement in the robot’s reference frame, with:
+\begin{itemize}
+    \item \textbf{\( x \)-axis}: aligned with the robot's forward direction.
+    \item \textbf{\( y \)-axis}: oriented to the left of the robot.
+\end{itemize}
+
+\subsection{f)}
+
+For 0.5 meters we got a standard derivation of 0.00311 meters as shown in Figure~\ref{fig:0.5object} 
+
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Excercise02/pictures/image.jpg}
+    \caption{Terminal derivation output for 0.5 meter}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Excercise02/pictures/obj05meters.jpg}
+    \caption{Rviz Simulation}
+  \end{subfigure}
+  \caption{Screenshots for the task with 0.5 meter object distance}
+    \label{fig:0.5object}
+\end{figure}
+
+
+For 1.5 Meters we got a standard derivation of 0.00343 meters as shown in Figure~\ref{fig:1.5object} 
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Excercise02/pictures/image15.jpg}
+    \caption{Terminal derivation output for 1.5 meter}
+  \end{subfigure}
+  \caption{Screenshots for the task with 1.5 meter object distance}
+    \label{fig:1.5object}
+
+\end{figure}
+
+\noindent
+During our observation, we placed the robot 1.5 meters away from an object and noticed that we had to slightly angle the robot. This means the robot was not perfectly aligned with the object but instead rotated slightly. One possible explanation for this could be a miscalibration of the laser sensor. However, other factors might also be involved, such as the positioning of the laser scanner, environmental conditions, or the reflective properties of the object’s surface.
+
+\noindent To address the observed misalignment, we modified the parameter \texttt{forward\_ray\_index\_ = 405}, instructing the robot to treat this beam as the center. This change aimed to ensure the robot correctly interprets the middle beam for accurate distance measurements.
+
+
+\subsection{g)}
+
+We placed one of the provided objects in front of the laser scanner at a distance of 1 meter, with the surface perpendicular to the robot. The object was then rotated in steps of about 10° while we measured the distance at each angle.
+
+
+As the object was rotated, the measured distance varied depending on the angle. Specifically:
+\begin{itemize}
+    \item When the object was directly facing the robot (perpendicular surface), the distance measured by the laser scanner was accurate.
+    \item As the object was rotated further (especially at angles near the edges of the object), the distance readings became inconsistent and often fell between the expected value and a much larger distance (likely corresponding to the background).
+\end{itemize}
+
+\noindent This inconsistent behavior was more pronounced when the object was rotated beyond a certain angle, where the laser scanner no longer appeared to detect the object correctly.
+
+\noindent The variation in distance measurements can be attributed to the \textbf{Mixed Pixels Problem}. This phenomenon occurs when the laser beam hits the very edge of an object, leading to a measurement that is a combination of the distance to the object and the background.
+
+\noindent When the object is rotated at certain angles, particularly when the laser beam strikes the boundary between the object and the empty space (background), the laser scanner detects both the foreground object and the background simultaneously. This causes the measured distance to be inaccurate, typically falling somewhere between the distance to the object and the background. This effect is more noticeable at specific angles where the laser beam partially reflects off the edge of the object, rather than its full surface.
+
+
+\subsection{h)}
+
+After placing the mirror one meter in front of the robot, the sensor detects the objects visible in the mirror. Due to the specular reflection the sensor perceives the wall behind it and displays a wall in the simulation that appears to be at double the actual distance. This phenomenon occurs because the sensor’s laser beam is reflected at an angle by the mirror surface. Instead of refracting on an object and being detected, most of the laser beams hit the mirror at an angle, are reflected almost perfectly and reach objects behind the robot. The sensor measures the entire traveled distance of the laser beam, including the path to the mirror, then from the mirror to the wall, and back. This effectively doubles the perceived distance, so in the simulation, the robot "sees" a wall at twice the actual distance. The only way this would not happen is if the laser beam was exactly perpendicular to the mirror and would therefore just be reflected backwards.
+
+
+As shown in Figure~\ref{fig:sensor_mirror}, the two white marks on the left represent the actual wall behind the robot, while the white marks in front of the robot (at the end of the red x axis) correspond to the mirror.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Excercise02/pictures/sensor_mirror.jpg}
+    \caption{Rviz Simulation with mirror}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Excercise02/pictures/sensor_without_mirror.jpg}
+    \caption{Rviz Simulation without mirror}
+  \end{subfigure}
+  \caption{}
+    \label{fig:0.5object}
+\end{figure}
+
+
+\section{Exercise 2 Ultrasonic sensors}
+
+\subsection{a)}
+
+An ultrasonic range sensor utilizes ultrasonic sound waves to measure the distance to an object by emitting sound pulses and calculating the time taken for the echo to return after bouncing off the object. These sensors operate on principles similar to animal echolocation (e.g., bats), functioning effectively in environments where visibility is poor. The sound waves travel through a medium, typically air, and reflect off surfaces. By measuring the time delay between the emission and the reception of the sound wave, the sensor computes the distance to the object. This capability allows the sensor to detect objects and determine their distance, making it useful in applications like robotics for navigation and obstacle detection.
+
+\subsection{b)}
+
+Several types of incorrect measurements are mentioned, along with their causes:
+
+\begin{itemize}
+    \item \textbf{Lateral Resolution Problem:} 
+    This occurs when the sensor cannot distinguish between two objects that are laterally close to each other. The beam may cover both objects, making it difficult to accurately measure the distance to each object individually.
+    
+    \item \textbf{Apparent Range Error Due to Orthogonal Reflection:} 
+    If the sensor's beam hits a surface at a perpendicular (orthogonal) angle, the reflected beam may not return directly to the sensor, leading to inaccurate measurements.
+    
+    \item \textbf{Invisible Wall or Object:} 
+    When the sensor beam strikes a smooth surface at a particular angle, the reflection may not return to the sensor. This results in the sensor failing to detect a wall or object, as the specular reflection causes the ultrasonic waves to be deflected away.
+    
+    \item \textbf{Invisible Corner:} 
+    Corners can cause the reflection to scatter in such a way that the sensor does not detect the obstacle. This is due to the geometry of the corner and the way it affects the ultrasonic wave's path.
+    
+    \item \textbf{False Reflection:} 
+    The beam may reflect off multiple surfaces before returning to the sensor. This can lead to the object appearing farther away than it actually is, as the multiple reflections increase the delay in the signal's return.
+\end{itemize}
+
+\subsection{c)}
+
+To discover the name and type of the ultrasonic topic, the following ROS2 commands were used:
+
+\begin{enumerate}
+    \item \textbf{Display a list of topics:} \\
+    First, a list of all active topics in the system was retrieved to identify the ultrasonic topic. The command used is:
+    \begin{lstlisting}[language=bash]
+    ros2 topic list
+    \end{lstlisting}
+    This command displays all currently available topics in the system, including the suspected ultrasonic topic, e.g., \texttt{/sonar\_range\_0}.
+    
+    \item \textbf{Determine the type of the topic:} \\
+    After identifying the topic \texttt{/sonar\_range\_0}, the type of this topic was obtained using the following command:
+    \begin{lstlisting}[language=bash]
+    ros2 topic info /sonar_range_0
+    \end{lstlisting}
+    This command reveals the type of the specified topic, for example, \texttt{sensor\_msgs/msg/Range}, if it corresponds to an ultrasonic range topic.
+    
+    \item \textbf{Inspect topic data:} \\
+    To further examine the content of the topic and verify its function, the following command was used to display its messages in real-time:
+    \begin{lstlisting}[language=bash]
+    ros2 topic echo /sonar_range_0
+    \end{lstlisting}
+    This command provides real-time data from the \texttt{/sonar\_range\_0} topic, confirming its status as an ultrasonic range sensor topic by observing the type of data it publishes.
+\end{enumerate}
+
+
+
+\subsection{d)}
+
+For mapping out the filed of view of one sensor, we performed 6x2 measurements at increasing distances from the robot. We aimed to place the object (one of the trash bins, since it is relatively large and tall) just where it could be detected by the sensor and thus map out the limits of detection from both sides. We measured the distance between the 2 positions where the bin was detected and could therefore calculate the angle of the cone covered by the sensor. Averaging the results from the different measurements resulted in an angle of 46.151 degrees. With a maximum measurement distance of 4 m this results in a surface area of 6.44 $m^2$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Excercise02/pictures/distances.jpeg}
+    \caption{Ultrasonic distance measurements}
+    \label{fig:distances}
+\end{figure}
+
+\subsection{e)}
+
+When placing a mirror in front of the robot, the sonar system perceives the mirror as a solid wall. 
+
+
+Unlike a laser sensor, which reflects off mirrors, the sonar sensor treats both mirrors and walls or orbjects similarly, as it does not reflect sound waves in the same way.
+
+\subsection{f)}
+
+We placed the robot at a distance of 1.5 m from the wall with the ultrasonic sensor on the leftward side (sensor 0) facing the wall, then rotated rightwards until the measurements from the sensor started alternating between a sensible measurement and an impossible distance.
+
+Taking the distance to the wall before rotation as side $b$ of a right triangle and the last sensible distance measurement after rotation as the hypotenuse, we calculated the rotation angle of the robot to be 0.27599 radians or 15.81°.
+
+
+
+\end{document}

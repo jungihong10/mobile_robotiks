@@ -1,0 +1,99 @@
+\documentclass[template,12pt,a4paper,enabledeprecatedfontcommands]{template}
+
+\def\semester{WS 2024}  %change to current semester
+\def\nameA{Tarik Eker} %TODO change to the name of the first group member
+\def\nameB{Kilian Hunter} %TODO change to the name of the second group member
+\def\nameC{Jun Gi Hong} %TODO change to the name of the second group member
+\def\uNr{7}    %TODO change to current exercise number 2,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gNr{7}	   %TODO change to your group number 1,..,7
+\def\gitCommit{e9e3557b394957b37d11a561e058f506coo1cafe} %TODO change to the corresponding git commit id
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor} % For coloring text
+\usepackage{amsmath} 
+\usepackage{comment}
+
+
+\renewcommand{\figurename}{Figure}
+
+\begin{document}\vspace*{-1em}
+
+\section{Exercise 1 Path planning}
+
+\subsection*{a)}
+
+We implemented A* to calculate the optimal path between the robot and a goal position. Our implementation runs on the grid published by the \textbf{mapping} node. We are using the Manhattan distance as a heuristic and enabled the robot to move diagonally by adding the required neighbors with a \textbf{gCost} of $\sqrt{2}$. 
+
+\subsection*{b)}
+
+For choosing a heuristic, one needs to consider that it should be admissible, i.e. not overestimate the actual cost of reaching the goal. Additionally, it should be consistent or monotone, which means that the distance estimate from one vertex should always be less than or equal to the estimate from a neighboring vertex plus the cost of reaching the neighbor.
+\newline
+\noindent If these conditions are not met, the algorithm will not find the optimal path.
+
+\subsection*{c)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Task07/pictures/path_planning_1c.png}
+    \caption{A* Pathfinding in simulation}
+    \label{fig:A*}
+\end{figure}
+
+
+\section{Exercise 2 Costmap}
+
+\subsection*{a)}
+\label{2a}
+We implemented a \textbf{costMap} function that searches the surrounding grid cells for the presence of obstacles. For this, we are using two different buffer distances; if an obstacle is closer to a grid cell than the smaller \textbf{bufferDanger}, the cost of that grid cell will be set to a maximum value. If the distance is further out than \textbf{bufferWarning}, the cost will be set according to a gradient depending on the distance and the maximum cost. 
+
+\subsection*{b)}
+
+As described in a), we considered it reasonable that there be a distance from an obstacle at which the maximum cost is reached. This should be better than reaching the maximum cost only at the lowest distance to the obstacle, as it should disincentivise the robot from moving too close to an obstacle earlier. For the gradient we chose this function:
+
+$$cost = maxCost \cdot \frac{1 - (distance - bufferDanger)}{(bufferWarning - bufferDanger)}$$
+
+which calculates the cost depending on the distance to the obstacle and the buffer zones.
+
+\subsection*{c)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task07/pictures/explored_simulation3.png}
+    \caption{Costmap of the simulation in Rviz}
+    \label{fig:Costmap}
+\end{figure}
+
+
+
+\subsection*{d)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Task07/pictures/simulation_path.png}
+    \caption{Pathplanning with the Costmap in the simulation}
+    \label{fig:Path in Costmap}
+\end{figure}
+
+
+
+
+\section{Exercise 3 Robot}
+
+The buffer zones were set to slightly different values for this.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Task07/path_real.png}
+    \caption{Pathplanning with real robot}
+    \label{fig:real robot}
+\end{figure}
+
+
+
+
+\end{document}
