@@ -1,0 +1,66 @@
+[0.009s] Invoking command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/praktikum7/prmr_group7_ws/src/simple_motion -DCMAKE_INSTALL_PREFIX=/home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion
+[0.061s] -- The C compiler identification is GNU 13.2.0
+[0.117s] -- The CXX compiler identification is GNU 13.2.0
+[0.132s] -- Detecting C compiler ABI info
+[0.216s] -- Detecting C compiler ABI info - done
+[0.226s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.226s] -- Detecting C compile features
+[0.226s] -- Detecting C compile features - done
+[0.235s] -- Detecting CXX compiler ABI info
+[0.327s] -- Detecting CXX compiler ABI info - done
+[0.337s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.338s] -- Detecting CXX compile features
+[0.338s] -- Detecting CXX compile features - done
+[0.341s] -- Found ament_cmake: 2.5.2 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.477s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.576s] -- Found rclcpp: 28.1.5 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.615s] -- Found rosidl_generator_c: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.629s] -- Found rosidl_generator_cpp: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.645s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.664s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.748s] -- Found rmw_implementation_cmake: 7.3.1 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.750s] -- Found rmw_fastrtps_cpp: 8.4.1 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.820s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[0.839s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[0.865s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.950s] -- Found geometry_msgs: 5.3.5 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+[0.989s] -- Found ament_lint_auto: 0.17.1 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[1.096s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.097s] -- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/praktikum7/prmr_group7_ws/src/simple_motion/include>
+[1.097s] -- Configured cppcheck exclude dirs and/or files: 
+[1.098s] -- Added test 'flake8' to check Python code syntax and style conventions
+[1.098s] -- Configured 'flake8' exclude dirs and/or files: 
+[1.100s] -- Added test 'lint_cmake' to check CMake code style
+[1.101s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[1.107s] -- Added test 'uncrustify' to check C / C++ code style
+[1.107s] -- Configured uncrustify additional arguments: 
+[1.108s] -- Added test 'xmllint' to check XML markup files
+[1.109s] -- Configuring done (1.1s)
+[1.120s] -- Generating done (0.0s)
+[1.122s] -- Build files have been written to: /home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion
+[1.132s] Invoked command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/praktikum7/prmr_group7_ws/src/simple_motion -DCMAKE_INSTALL_PREFIX=/home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion
+[1.133s] Invoking command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion -- -j4 -l4
+[1.181s] [ 50%] [32mBuilding CXX object CMakeFiles/simple_time.dir/src/simple_time.cpp.o[0m
+[1.774s] [100%] [32m[1mLinking CXX executable simple_time[0m
+[1.861s] [100%] Built target simple_time
+[1.872s] Invoked command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion -- -j4 -l4
+[1.902s] Invoking command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion
+[1.910s] -- Install configuration: ""
+[1.910s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/lib/simple_motion/simple_time
+[1.911s] -- Set non-toolchain portion of runtime path of "/home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/lib/simple_motion/simple_time" to ""
+[1.911s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/package_run_dependencies/simple_motion
+[1.911s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/parent_prefix_path/simple_motion
+[1.911s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/ament_prefix_path.sh
+[1.911s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/ament_prefix_path.dsv
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/path.sh
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/path.dsv
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.bash
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.sh
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.zsh
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.dsv
+[1.912s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/package.dsv
+[1.913s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/packages/simple_motion
+[1.913s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/cmake/simple_motionConfig.cmake
+[1.913s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/cmake/simple_motionConfig-version.cmake
+[1.913s] -- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/package.xml
+[1.915s] Invoked command in '/home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/praktikum7/prmr_group7_ws/src/simple_motion/build/simple_motion

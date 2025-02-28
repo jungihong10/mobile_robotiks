@@ -1,0 +1,41 @@
+include "buggy.inc"
+include "map.inc"
+
+# time to pause (in GUI mode) or quit (in headless mode (-g)) the simulation
+quit_time 3600 # 1 hour of simulated time
+
+paused 0
+
+# size of the world in meters
+size [31 26]
+
+# set the resolution of the underlying raytrace model in meters
+resolution 0.01
+
+interval_sim 50 # the higher this value the faster the sim
+#interval_real 50
+
+# configure the GUI window
+window
+( 
+  size [ 922 714 ]
+  center [5.430 -6.072] 
+  scale 13.660   # pixels per meter
+  # show_data 1 removed since ros melodic
+)
+
+# load an environment bitmap
+floorplan
+( 
+  bitmap "labyrinth.png"
+  # size 30m x 30m
+  size [30.000 25.000 0.800]
+  pose [0.000 0.000 0.000 0.000]
+  name "simple"
+)
+
+buggy
+(
+  name "buggy" 
+  pose [0 0 0 0]
+)

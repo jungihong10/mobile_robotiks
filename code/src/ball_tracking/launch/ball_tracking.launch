@@ -1,0 +1,22 @@
+<launch>
+    <node pkg="ball_tracking" exec="ball_tracker">
+        <param name="ransac_plane" value="0"/>
+        <param name="ransac_sphere" value="0"/>
+
+        <param name="use_sim_time" value="true"/>
+
+        <param name="iterations_plane" value="50"/>
+        <param name="iterations_sphere" value="700"/>
+
+        <param name="floor" value="1"/>
+        <param name="walls" value="3"/>
+        <param name="spheres" value="3"/>
+
+        <param name="sphere_min_points" value="50"/>
+        <param name="sphere_normal_distance_weight" value="0.1"/>
+        <param name="sphere_distance_threshold" value="0.02"/>
+
+        <param name="sphere_radius_min" value="0.06"/>
+        <param name="sphere_radius_max" value="0.13"/>
+    </node>
+</launch>

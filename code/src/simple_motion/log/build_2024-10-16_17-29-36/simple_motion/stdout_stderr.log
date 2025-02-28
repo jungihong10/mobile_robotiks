@@ -1,0 +1,21 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/simple_time.dir/src/simple_time.cpp.o[0m
+[100%] [32m[1mLinking CXX executable simple_time[0m
+[100%] Built target simple_time
+-- Install configuration: ""
+-- Installing: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/lib/simple_motion/simple_time
+-- Set non-toolchain portion of runtime path of "/home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/lib/simple_motion/simple_time" to ""
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/package_run_dependencies/simple_motion
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/parent_prefix_path/simple_motion
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/ament_prefix_path.sh
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/path.sh
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/environment/path.dsv
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.bash
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.sh
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.zsh
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/local_setup.dsv
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/package.dsv
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/ament_index/resource_index/packages/simple_motion
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/cmake/simple_motionConfig.cmake
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/cmake/simple_motionConfig-version.cmake
+-- Up-to-date: /home/praktikum7/prmr_group7_ws/src/simple_motion/install/simple_motion/share/simple_motion/package.xml
