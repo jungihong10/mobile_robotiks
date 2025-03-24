@@ -28,13 +28,13 @@ MobileRobotiks/
 - **PID-based Motion Control**
 
 ## 📜 Weekly Reports
-- [Protokolle2.pdf](reports/Protokolle2.pdf)
-- [Protokolle3.pdf](reports/Protokolle3.pdf)
-- [Protokolle4.pdf](reports/Protokolle4.pdf)
-- [Protokolle5.pdf](reports/Protokolle5.pdf)
-- [Protokolle6.pdf](reports/Protokolle6.pdf)
-- [Protokolle7.pdf](reports/Protokolle7.pdf)
-- [Protokolle8.pdf](reports/Protokolle8.pdf)
+- [Protokolle2.pdf](Protokolle2.pdf)
+- [Protokolle3.pdf](Protokolle3.pdf)
+- [Protokolle4.pdf](Protokolle4.pdf)
+- [Protokolle5.pdf](Protokolle5.pdf)
+- [Protokolle6.pdf](Protokolle6.pdf)
+- [Protokolle7.pdf](Protokolle7.pdf)
+- [Protokolle8.pdf](Protokolle8.pdf)
 
 ## 👨‍🏫 Supervisors
 - **Prof. Dr. Andreas Zell**
