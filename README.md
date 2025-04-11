@@ -11,7 +11,7 @@ Learn how to program a two-wheeled robot to drive from point A to point B. To do
 
 ![#3](assets/output2.gif)
 
-## 📂 Project Structure
+## Project Structure
 ```
 MobileRobotiks/
 ├── assets/               # Media files (GIFs, images, etc.)
@@ -20,14 +20,14 @@ MobileRobotiks/
 ├── README.md             # Project documentation (this file)
 ```
 
-## 🚀 Features Implemented
+## Features Implemented
 - **Obstacle Avoidance** using **Potential Field Method**
 - **Path Planning** using **A* Algorithm**
 - **Real-time Robot Navigation** with ROS 2
 - **Localization & Mapping** using sensor data
 - **PID-based Motion Control**
 
-## 📜 Weekly Reports
+## Weekly Reports
 - [Protokolle2.pdf](Protokolle2.pdf)
 - [Protokolle3.pdf](Protokolle3.pdf)
 - [Protokolle4.pdf](Protokolle4.pdf)
@@ -36,7 +36,7 @@ MobileRobotiks/
 - [Protokolle7.pdf](Protokolle7.pdf)
 - [Protokolle8.pdf](Protokolle8.pdf)
 
-## 👨‍🏫 Supervisors
+## Supervisors
 - **Prof. Dr. Andreas Zell**
 - **Mr. Daniel Eisele**
 - **Mr. Thomas Gossard**
