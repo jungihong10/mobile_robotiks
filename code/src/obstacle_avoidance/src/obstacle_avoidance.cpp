@@ -109,26 +109,26 @@ void ObstacleAvoidance::process() {
 
     maxSpeed = 0.3;
     if (obstacleDetected) {
-        RCLCPP_INFO(this->get_logger(), "obstacle detected, stopping!");
+    RCLCPP_INFO(this->get_logger(), "obstacle detected, avoiding!");
+
+    double escapeAngle = totalForce.angle();
+
+    if (backupCounter < 20) {
+        // ① 후진 (stuck 탈출)
+        twistMsg.linear.x = -0.1;
+        twistMsg.angular.z = 0.0;
+        backupCounter++;
+    } else {
+        // ② 회전하며 우회
         twistMsg.linear.x = 0.0;
-
-
-        double escapeAngle = totalForce.angle();
         twistMsg.angular.z = std::clamp(escapeAngle, -std::numbers::pi / 8, std::numbers::pi / 8);
 
-    } else {
-        double distanceToGoal = (robotPos - goalPos).norm();
-        if (distanceToGoal > 0.2){
-            twistMsg.linear.x = std::max(maxSpeed - std::abs(angleDiff), 0.1); //(1/exp(angleDiff)) * maxSpeed;
-            twistMsg.angular.z = std::clamp(angleDiff, -std::numbers::pi / 4, std::numbers::pi / 4);
-            //RCLCPP_INFO(this->get_logger(), "linear: %f", twistMsg.linear.x);
-            //RCLCPP_INFO(this->get_logger(), "angular: %f", twistMsg.angular.z);
-        } else {
-            twistMsg.linear.x = 0.0;
-            twistMsg.angular.z = 0.0;
+        // 장애물이 사라지면 상태 초기화
+        if (!obstacleDetected) {
+            backupCounter = 0;
         }
-
     }
+}
 
     pubCmdVel->publish(twistMsg);
 }
